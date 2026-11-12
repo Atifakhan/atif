@@ -25,3 +25,150 @@ h1, h2, h3, h4, .font-heading {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(160, 150, 135, 0.45);
 }
+
+
+/* Premium profile refresh */
+:root {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  --page-ink: #080c12;
+  --panel-ink: rgba(16, 22, 31, .82);
+  --panel-border: rgba(203, 171, 103, .16);
+  --gold: #e8bd70;
+  --gold-bright: #f3d69a;
+  --muted-copy: #a6afbd;
+}
+body {
+  background:
+    radial-gradient(ellipse at 50% -18%, rgba(171, 126, 52, .18), transparent 42rem),
+    radial-gradient(ellipse at 4% 36%, rgba(37, 79, 101, .12), transparent 34rem),
+    var(--page-ink);
+  color: #f4f2ed;
+}
+::selection { background: rgba(232, 189, 112, .35); color: #fff; }
+header {
+  background: rgba(8, 12, 18, .78) !important;
+  border-color: rgba(203, 171, 103, .16) !important;
+  box-shadow: 0 10px 36px rgba(0,0,0,.18);
+  backdrop-filter: blur(22px) saturate(145%);
+}
+header > div { max-width: 76rem; }
+header nav a { position: relative; padding: .55rem 0; transition: color .2s ease, transform .2s ease; }
+header nav a:hover { color: var(--gold-bright); transform: translateY(-1px); }
+header nav a::after {
+  content: ""; position: absolute; left: 50%; right: 50%; bottom: .18rem; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transition: left .24s ease, right .24s ease;
+}
+header nav a:hover::after, header nav a:focus-visible::after { left: 0; right: 0; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button { transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, background-color .22s ease, border-color .22s ease, color .22s ease; }
+button:hover { transform: translateY(-1px); }
+button:active { transform: translateY(0) scale(.97); }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+main { max-width: 54rem !important; }
+main > div.sticky {
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 1.25rem;
+  padding: .9rem !important;
+  background: rgba(11, 16, 24, .83) !important;
+  box-shadow: 0 18px 52px rgba(0,0,0,.24);
+}
+main > div.sticky input {
+  min-height: 2.85rem;
+  border-radius: .9rem !important;
+  background: rgba(255,255,255,.045) !important;
+  border-color: rgba(255,255,255,.09) !important;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+main > div.sticky input:focus {
+  background: rgba(255,255,255,.07) !important;
+  border-color: rgba(232,189,112,.6) !important;
+  box-shadow: 0 0 0 4px rgba(232,189,112,.09);
+}
+main > div.sticky > div:last-child { scrollbar-width: none; }
+main > div.sticky > div:last-child button {
+  position: relative;
+  border-radius: .72rem !important;
+  padding: .62rem .92rem !important;
+  border: 1px solid rgba(255,255,255,.075);
+  background: rgba(255,255,255,.035) !important;
+  color: #aeb6c2 !important;
+  overflow: hidden;
+  transition: color .22s ease, border-color .22s ease, background .22s ease, transform .22s ease, box-shadow .22s ease;
+}
+main > div.sticky > div:last-child button:hover {
+  color: #f6e6c8 !important;
+  border-color: rgba(232,189,112,.38);
+  background: rgba(232,189,112,.08) !important;
+  transform: translateY(-2px);
+}
+main > div.sticky > div:last-child button[class*="bg-amber-400"] {
+  color: #17130c !important;
+  border-color: rgba(243,214,154,.75);
+  background: linear-gradient(135deg, #f3d69a, #d5a84f) !important;
+  box-shadow: 0 5px 20px rgba(213,168,79,.2), inset 0 1px rgba(255,255,255,.42);
+  animation: tab-arrive .32s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes tab-arrive { from { opacity: .65; transform: scale(.94) translateY(2px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+main section { scroll-margin-top: 6rem; }
+main section > div[class*="space-y"] > div, main section > div.space-y-4 > div {
+  transition: filter .25s ease, transform .25s ease;
+}
+main section h2 { letter-spacing: .13em !important; color: #e0d4bc !important; }
+main section > div:first-child span:last-child { color: #87919d !important; }
+main a[class*="rounded-2xl"][class*="bg-gradient-to-b"] {
+  border-color: rgba(255,255,255,.085) !important;
+  background: linear-gradient(145deg, rgba(25,33,44,.94), rgba(11,16,24,.94)) !important;
+  box-shadow: 0 12px 35px rgba(0,0,0,.2), inset 0 1px rgba(255,255,255,.035) !important;
+}
+main a[class*="rounded-2xl"][class*="bg-gradient-to-b"]:hover {
+  border-color: rgba(232,189,112,.35) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.3), 0 0 26px rgba(232,189,112,.06) !important;
+}
+main .group[class*="rounded-2xl"][class*="bg-gradient-to-b"] {
+  box-shadow: 0 16px 45px rgba(0,0,0,.28);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
+}
+main .group[class*="rounded-2xl"][class*="bg-gradient-to-b"]:hover {
+  box-shadow: 0 23px 55px rgba(0,0,0,.35), 0 0 34px rgba(232,189,112,.08);
+}
+main .bg-stone-900\/80.backdrop-blur-md {
+  border-color: var(--panel-border) !important;
+  background: linear-gradient(145deg, rgba(20,27,37,.9), rgba(12,17,25,.86)) !important;
+  box-shadow: 0 20px 56px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.04);
+}
+#top { padding-top: 2.4rem !important; }
+#top h1 { letter-spacing: -.045em; text-shadow: 0 5px 32px rgba(232,189,112,.12); }
+#top p { color: #b2bac5 !important; }
+#top img { box-shadow: 0 0 0 1px rgba(243,214,154,.28), 0 12px 45px rgba(0,0,0,.45); }
+#top > div > div:first-child {
+  border-color: rgba(232,189,112,.2) !important;
+  background: rgba(18,24,33,.78) !important;
+}
+main > div.mt-12 {
+  border-color: rgba(232,189,112,.16) !important;
+  background: linear-gradient(125deg, rgba(24,30,39,.92), rgba(12,17,24,.94)) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.24);
+}
+footer {
+  background: linear-gradient(180deg, rgba(12,17,24,.2), rgba(12,17,24,.8)) !important;
+  border-color: rgba(203,171,103,.14) !important;
+}
+footer button:first-child { box-shadow: 0 0 0 6px rgba(232,189,112,.045); }
+@media (max-width: 640px) {
+  header > div { height: 3.8rem !important; }
+  main > div.sticky { margin-left: .15rem; margin-right: .15rem; padding: .7rem !important; }
+  main > div.sticky > div:last-child { gap: .4rem !important; }
+  main > div.sticky > div:last-child button { padding: .58rem .72rem !important; }
+  #top { padding-top: 1.65rem !important; }
+  main section h2 { letter-spacing: .08em !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
