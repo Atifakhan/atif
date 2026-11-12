@@ -39,7 +39,7 @@ export const PROFILE_INFO: ProfileInfo = {
   phoneDisplay: "0314 9881406",
   location: "Islamabad, Pakistan · Available Worldwide",
   status: "Available for Consultations & Engineering Projects",
-  avatarUrl: "/assets/aistudio/image_42d9e173.png",
+  avatarUrl: "assets/aistudio/image_42d9e173.png",
   skills: [
     "Cisco Routing & Switching",
     "Enterprise Firewalls",
