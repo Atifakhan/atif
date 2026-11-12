@@ -15,6 +15,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [website, setWebsite] = useState('');
   const [copied, setCopied] = useState<string | null>(null);
   const [sendState, setSendState] = useState<SendState>('idle');
 
@@ -23,6 +24,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     setEmail('');
     setSubject('');
     setMessage('');
+    setWebsite('');
     setSendState('idle');
   };
 
@@ -30,7 +32,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
     e.preventDefault();
     setSendState('sending');
 
-    const payload = { name: name.trim(), email: email.trim(), subject: subject.trim(), message: message.trim() };
+    const payload = { name: name.trim(), email: email.trim(), subject: subject.trim(), message: message.trim(), website };
     const apiUrl = import.meta.env.VITE_CONTACT_API_URL as string | undefined;
 
     if (apiUrl) {
@@ -145,6 +147,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 </div>
               ) : (
                 <form onSubmit={handleSend} className="space-y-3.5">
+                  <div aria-hidden="true" className="absolute -left-[10000px] h-0 w-0 overflow-hidden">
+                    <label htmlFor="contact-website">Leave this field empty</label>
+                    <input id="contact-website" tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
+                  </div>
                   <TerminalField label="name" prompt=">_" value={name} onChange={setName} placeholder="Your name or organization" required autoComplete="name" />
                   <TerminalField label="reply_email" prompt=">_" value={email} onChange={setEmail} placeholder="you@example.com" type="email" required autoComplete="email" />
                   <TerminalField label="subject" prompt=">_" value={subject} onChange={setSubject} placeholder="Project, consulting, or career inquiry" />
