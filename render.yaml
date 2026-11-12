@@ -9,13 +9,9 @@ services:
     envVars:
       - key: ALLOWED_ORIGIN
         value: https://atifakhan.github.io
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: "587"
-      - key: SMTP_USERNAME
-        sync: false
-      - key: SMTP_PASSWORD
+      - key: RESEND_FROM
+        value: Atif Profile <onboarding@resend.dev>
+      - key: RESEND_API_KEY
         sync: false
       - key: CONTACT_TO
         value: atifat45@gmail.com
