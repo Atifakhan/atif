@@ -18,8 +18,6 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   const [copied, setCopied] = useState<string | null>(null);
   const [sendState, setSendState] = useState<SendState>('idle');
 
-  if (!isOpen) return null;
-
   const resetForm = () => {
     setName('');
     setEmail('');
@@ -172,7 +170,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
 
                   <div className="flex flex-col gap-2 border-t border-white/[.07] pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <p className="font-mono text-[10px] text-slate-500">
-                      {apiConfigured ? 'SMTP relay connected' : 'Email app fallback until SMTP relay is configured'}
+                      {apiConfigured ? 'Email relay connected' : 'Email draft fallback until relay is configured'}
                     </p>
                     <div className="flex items-center gap-2">
                       <button
