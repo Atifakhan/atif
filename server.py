@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
-"""Small SMTP relay for the GitHub Pages contact form."""
-from email.message import EmailMessage
-from email.utils import formataddr, parseaddr
+"""Small HTTPS email API relay for the GitHub Pages contact form."""
+from email.utils import parseaddr
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
 import re
-import smtplib
-import ssl
 import time
 from threading import Lock
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "https://atifakhan.github.io").rstrip("/")
-SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USERNAME = os.environ.get("SMTP_USERNAME", "")
-SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+RESEND_FROM = os.environ.get("RESEND_FROM", "Atif Profile <onboarding@resend.dev>")
 CONTACT_TO = os.environ.get("CONTACT_TO", "atifat45@gmail.com")
 RATE_WINDOW = 60
 RATE_LIMIT = 20
@@ -35,12 +32,12 @@ class ContactHandler(BaseHTTPRequestHandler):
     server_version = "ContactRelay/1.0"
 
     def log_message(self, fmt, *args):
-        # Avoid writing visitor content or addresses to public logs.
+        # Do not log names, email addresses, or message contents.
         super().log_message(fmt, *args)
 
-    def _headers(self, status=200, content_type="application/json; charset=utf-8"):
+    def _headers(self, status):
         self.send_response(status)
-        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Access-Control-Allow-Origin", ALLOWED_ORIGIN)
@@ -76,16 +73,12 @@ class ContactHandler(BaseHTTPRequestHandler):
         if self.path != "/api/contact":
             self._json(404, {"error": "Not found"})
             return
-
-        origin = self.headers.get("Origin", "")
-        if origin != ALLOWED_ORIGIN:
+        if self.headers.get("Origin", "") != ALLOWED_ORIGIN:
             self._json(403, {"error": "Origin not allowed"})
             return
-
         if self.headers.get_content_type() != "application/json":
             self._json(415, {"error": "JSON required"})
             return
-
         try:
             length = int(self.headers.get("Content-Length", "0"))
         except ValueError:
@@ -93,7 +86,6 @@ class ContactHandler(BaseHTTPRequestHandler):
         if length < 1 or length > 12000:
             self._json(413, {"error": "Message is too large"})
             return
-
         try:
             data = json.loads(self.rfile.read(length))
         except (json.JSONDecodeError, UnicodeDecodeError):
@@ -103,7 +95,7 @@ class ContactHandler(BaseHTTPRequestHandler):
             self._json(400, {"error": "Invalid message"})
             return
 
-        # Quietly accept bot submissions without sending them.
+        # Quietly accept bot submissions without sending.
         if str(data.get("website", "")).strip():
             self._json(200, {"ok": True})
             return
@@ -112,7 +104,6 @@ class ContactHandler(BaseHTTPRequestHandler):
         reply_email = str(data.get("email", "")).strip()
         subject = str(data.get("subject", "")).strip()
         body = str(data.get("message", "")).strip()
-
         if not name or len(name) > 120 or not valid_email(reply_email) or not body or len(body) > 8000:
             self._json(400, {"error": "Check the required fields and try again"})
             return
@@ -129,37 +120,38 @@ class ContactHandler(BaseHTTPRequestHandler):
                 return
             _submissions.append(now)
 
-        if not SMTP_USERNAME or not SMTP_PASSWORD:
+        if not RESEND_API_KEY:
             self._json(503, {"error": "Email delivery is not configured"})
             return
 
-        email_message = EmailMessage()
-        email_message["Subject"] = (subject or f"Profile inquiry from {name}")[:160]
-        email_message["From"] = formataddr(("Muhammad Atif", SMTP_USERNAME))
-        email_message["To"] = CONTACT_TO
-        email_message["Reply-To"] = reply_email
-        email_message.set_content(
-            f"New message from your profile site\n\n"
-            f"Name: {name}\n"
-            f"Reply email: {reply_email}\n"
-            f"Subject: {subject or '(not provided)'}\n\n"
-            f"{body}\n"
+        email_payload = {
+            "from": RESEND_FROM,
+            "to": [CONTACT_TO],
+            "reply_to": reply_email,
+            "subject": (subject or f"Profile inquiry from {name}")[:160],
+            "text": (
+                f"New message from your profile site\n\n"
+                f"Name: {name}\n"
+                f"Reply email: {reply_email}\n"
+                f"Subject: {subject or '(not provided)'}\n\n"
+                f"{body}\n"
+            ),
+        }
+        request = Request(
+            "https://api.resend.com/emails",
+            data=json.dumps(email_payload).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
         )
-
         try:
-            context = ssl.create_default_context()
-            if SMTP_PORT == 465:
-                with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=20, context=context) as smtp:
-                    smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                    smtp.send_message(email_message)
-            else:
-                with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
-                    smtp.ehlo()
-                    smtp.starttls(context=context)
-                    smtp.ehlo()
-                    smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
-                    smtp.send_message(email_message)
-        except Exception:
+            with urlopen(request, timeout=20) as response:
+                if response.status not in (200, 201):
+                    raise URLError("Email API rejected the request")
+                response.read()
+        except (HTTPError, URLError, TimeoutError):
             self._json(502, {"error": "Email delivery failed. Please try again later."})
             return
 
