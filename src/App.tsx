@@ -349,7 +349,7 @@ export default function App() {
                   <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full font-mono font-semibold">100% Free</span>
                 </h3>
                 <p className="text-xs text-stone-400 mt-1 leading-relaxed">
-                  Ready to deploy on <code className="text-amber-300 font-mono">https://atifakhan.github.io/links</code>. Automated GitHub Actions workflow is already packaged in this project.
+                  This profile is live on GitHub Pages at <code className="text-amber-300 font-mono">atifakhan.github.io/atif</code>. Connect with me across engineering, cloud, and security.
                 </p>
               </div>
             </div>
