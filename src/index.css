@@ -172,3 +172,10 @@ footer button:first-child { box-shadow: 0 0 0 6px rgba(232,189,112,.045); }
     transition-duration: .01ms !important;
   }
 }
+
+.min-h-screen.bg-stone-950 {
+  background:
+    radial-gradient(ellipse at 50% -18%, rgba(171, 126, 52, .18), transparent 42rem),
+    radial-gradient(ellipse at 4% 36%, rgba(37, 79, 101, .12), transparent 34rem),
+    #080c12 !important;
+}
