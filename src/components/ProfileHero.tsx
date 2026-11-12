@@ -67,7 +67,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <span className="font-mono text-[11px] text-stone-300">
-            Active: <span className="text-emerald-400 font-semibold">IOTA Solutions</span> · CCNA & Security Specialist
+            Active: <span className="text-emerald-400 font-semibold">IOTA Solutions</span> · Network & Security Specialist
           </span>
         </motion.div>
 
